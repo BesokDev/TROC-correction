@@ -1,0 +1,24 @@
+*, ::before, ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Pour avoir un footer toujours en bas de l'écran et un body qui prend toute la place restante */
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.main {
+    flex-grow: 1;
+}
+
+label::after {
+    content: '*';
+    color: red;
+    margin-left: 5px;
+
+}
