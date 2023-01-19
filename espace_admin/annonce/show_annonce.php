@@ -99,9 +99,11 @@ require_once('../include/_header_admin.php');
                         <td class="text-center"><?= $annonce['adresse'] ?></td>
                         <td class="text-center"><?= $annonce['cp'] ?></td>
                         <td class="text-center"><?php $queryFindUser = $bdd->query("SELECT prenom FROM user WHERE id_user=$annonce[id_user]");
-                            $queryFindUser->execute(); $membre = $queryFindUser->fetch(PDO::FETCH_ASSOC); echo $membre['prenom'];  ?></td>
+                                                $membre = $queryFindUser->fetch(PDO::FETCH_ASSOC); echo $membre['prenom'];  ?>
+                        </td>
                         <td class="text-center"><?php $queryFindCategorie = $bdd->query("SELECT titre FROM categorie WHERE id_categorie=$annonce[id_categorie]");
-                            $queryFindCategorie->execute(); $categorie = $queryFindCategorie->fetch(PDO::FETCH_ASSOC); echo $categorie['titre']; ?></td>
+                                                $categorie = $queryFindCategorie->fetch(PDO::FETCH_ASSOC); echo $categorie['titre']; ?>
+                        </td>
                         <td class="text-center"><?= $annonce['created_at'] ?></td>
                         <td class="text-center">
                             <a href="?action=show&id_annonce=<?= $annonce['id_annonce'] ?>"

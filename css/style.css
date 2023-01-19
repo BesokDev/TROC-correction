@@ -1,4 +1,4 @@
-*, ::before, ::after {
+*, :before, :after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,9 +16,9 @@ body {
     flex-grow: 1;
 }
 
-label::after {
+/* Pour tous les labels de formulaire, sauf ceux de la page d'accueil et de connexion */
+form:not(#sort, #filter, #connexion) label:after  {
     content: '*';
     color: red;
     margin-left: 5px;
-
 }
