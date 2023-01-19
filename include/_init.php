@@ -7,7 +7,7 @@ $bdd = new PDO('mysql:host=localhost:3306;dbname=troc', 'root','', [PDO::ATTR_ER
 session_start();
 
 // Définition de constantes
-define('BASE_URL', $_SERVER['DOCUMENT_ROOT']);
-define('UPLOAD_FOLDER', 'uploads');
+define('BASE_URL', "http://troc/");
+define('UPLOAD_FOLDER', BASE_URL .'uploads/');
 
 require_once ('_fonctions.php');

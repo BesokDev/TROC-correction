@@ -37,15 +37,15 @@ if($_POST && !empty($_POST))
         $error = true;
     }
 
-    $verifEmail = $bdd->prepare("SELECT * FROM user WHERE email = :email");
-    $verifEmail->bindValue(':email', $email, PDO::PARAM_STR);
-    $verifEmail->execute();
-
-    if($verifEmail->rowCount())
-    {
-        $errorEmail= "<p class='text-danger font-italic'>Un compte existe déjà avec cet email : $email. Veuillez en saisir un autre.</p>";
-        $error = true;
-    }
+//    $verifEmail = $bdd->prepare("SELECT * FROM user WHERE email = :email");
+//    $verifEmail->bindValue(':email', $email, PDO::PARAM_STR);
+//    $verifEmail->execute();
+//
+//    if($verifEmail->rowCount())
+//    {
+//        $errorEmail= "<p class='text-danger font-italic'>Un compte existe déjà avec cet email : $email. Veuillez en saisir un autre.</p>";
+//        $error = true;
+//    }
 
     if (empty($email))
     {
@@ -75,7 +75,6 @@ if($_POST && !empty($_POST))
         // 6. Si l'internaute a correctement remplit le formulaire, alors on peut réaliser le traitement PHP + SQL permettant d'insérer le membre en BDD (requete préparée | prepare() + bindValue())
         $insert=$bdd->prepare("INSERT INTO user VALUES (NULL, :pseudo, :password, :nom, :prenom, :email, :telephone, :civilite, :statut, :created_at, NULL, NULL)");
 
-//        $insert->bindValue(':id_user', NULL, PDO::PARAM_NULL);
         $insert->bindValue(':pseudo', $pseudo);
         $insert->bindValue(':password', $password);
         $insert->bindValue(':nom', $nom);
@@ -101,7 +100,7 @@ require_once('include/_header.php');
 <h1 class="text-center mx-auto mt-3 text-warning">INSCRIPTION</h1>
 
 
-<form class="col-md-6 col-sm-9 mx-auto my-5" method="POST" >
+<form class="col-md-6 col-sm-9 mx-auto my-5" method="post" >
 
     <h3 class="text-center text-warning my-4 bg-dark rounded mx-auto col-md-8">1 - Vos Identifiants</h3>
 
@@ -113,12 +112,12 @@ require_once('include/_header.php');
         <div class="form-group col-6">
             <label for="pseudo">Pseudo</label>
             <input type="text" id="pseudo" name="pseudo" class="form-control <?php if(isset($errorPseudo)) echo $border; ?>">
-            <?php if(isset($errorPseudo)) echo $errorPseudo; ?>
+            <?= $errorPseudo ?? '' ?>
         </div>
         <div class="form-group col-6">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" class="form-control <?php if(isset($errorEmail)) echo $border; ?>">
-            <?php if(isset($errorEmail)) echo $errorEmail; ?>
+            <?= $errorEmail ?? '' ?>
         </div>
     </div>
     <div class="row mt-2">
@@ -129,7 +128,7 @@ require_once('include/_header.php');
         <div class="col-6">
             <label for="confirm_mdp">Confirmer mot de passe</label>
             <input type="password" id="confirm_mdp" name="confirm_mdp" class="form-control">
-            <?php if(isset($errorMdp)) echo $errorMdp; ?>
+            <?= $errorMdp ?? '' ?>
         </div>
     </div>
 

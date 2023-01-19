@@ -2,20 +2,12 @@
 
 require_once('../include/_init.php');
 
-//if( ! isAdminConnect()) {
-//    header('location: ../index.php');
-//}
+if( ! isAdminConnect()) {
+    header('location: ../index.php');
+}
 
 require_once('include/_header_admin.php');
 
-//echo session_status();
-//echo session_name();
-//
-//
-//echo session_status();
-//
-////dd($_SERVER);
-//dd($_SESSION);
 ?>
 
 <div class="container-fluid px-4">
