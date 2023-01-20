@@ -34,9 +34,10 @@
                                 <li><a class="dropdown-item" href="../connexion.php">Connexion</a></li>
                                 <?php endif ?>
                                 <?php if(isAdminConnect()): ?>
-                                <li><a class="dropdown-item" href="../espace_admin/index_admin.php">Espace admin</a></li>
+                                    <li><a class="dropdown-item" href="../espace_admin/index_admin.php">Espace admin</a></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="../form_annonce.php">Publier une annonce</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <?php endif ?>
                                 <?php if(isConnect()) : ?>
                                 <li><a class="dropdown-item" href="#">Profil</a></li>
                                 <li><a class="dropdown-item" href="../connexion.php?action=deconnexion">Déconnexion</a></li>
