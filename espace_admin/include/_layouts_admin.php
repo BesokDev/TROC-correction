@@ -24,7 +24,7 @@
                     </a>
             <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
                     <div class="sb-sidenav-menu-heading">Communauté</div>
-                    <a class="nav-link" href="/espace_admin/membre/show_user.php">
+                    <a class="nav-link" href="/espace_admin/commentaire/show_commentaire.php">
                         <div class="sb-nav-link-icon"><i class="fa-solid fa-comments"></i></div>
                         Commentaires
                     </a>
