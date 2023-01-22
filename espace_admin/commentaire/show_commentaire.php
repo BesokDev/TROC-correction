@@ -33,19 +33,12 @@ if ($query->rowCount()) {
 
 <div class="container-fluid px-4">
 
-    <h1 class="mt-4">Catégories</h1>
+    <h1 class="mt-4">Commentaires</h1>
 
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="../index_admin.php">Dashboard</a></li>
-        <li class="breadcrumb-item active">Catégories</li>
+        <li class="breadcrumb-item active">Commentaires</li>
     </ol>
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <a href="?action=create" class="btn btn-primary col-3"><i class="bi bi-bookmark-plus"></i> Créer une catégorie</a>
-            </div>
-        </div>
-    </div>
 
     <?php
     if( isset($_GET['action']) && $_GET['action'] === 'update') {
