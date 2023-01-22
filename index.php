@@ -79,14 +79,14 @@ require_once('include/_header.php');
                     <div class="card mb-3" style="border: none !important;">
                         <div class="row">
                             <div class="col-4 ms-0 ps-0">
-                                <img src="<?= UPLOAD_FOLDER . $annonce['photo'] ?>" class="rounded-start" alt="Photo d'annonce manquante" width="250" height="150" style="object-fit: contain;">
+                                <img src="<?= UPLOAD_URL . $annonce['photo'] ?>" class="rounded-start" alt="Photo d'annonce manquante" width="250" height="150" style="object-fit: contain;">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body my-0 py-0">
                                     <h5 class="card-title text-primary"><?= $annonce['titre'] ?></h5>
                                     <p class="card-text text-dark"><?= $annonce['desc_courte'] ?></p>
                                     <div class="row text-dark pt-5">
-                                        <div class="col-6"><?php $queryFindUser = $bdd->query("SELECT prenom FROM user WHERE id_user=$annonce[id_user]"); $membre = $queryFindUser->fetch(PDO::FETCH_ASSOC); echo $membre['prenom'];  ?> ⭐⭐⭐⭐⭐</div>
+                                        <div class="col-6"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['prenom'];  ?> ⭐⭐⭐⭐⭐</div>
                                         <div class="col-6 text-end"><?= $annonce['prix'] ?> €</div>
                                     </div>
                                 </div>

@@ -53,8 +53,7 @@ if ($query->rowCount()) {
     $annonce = $query->fetch(PDO::FETCH_ASSOC);
 
     // Récupération du nom du membre de l'annonce
-    $queryFindUser = $bdd->query("SELECT prenom FROM user WHERE id_user=$annonce[id_user]");
-    $membre = $queryFindUser->fetch(PDO::FETCH_ASSOC);
+    $membre = findUser($annonce['id_user'], $bdd);
 
     // Récupération des autres annonces postées par ce même membre
     $queryOtherAnnonce = $bdd->query("SELECT * FROM annonce WHERE id_user=$annonce[id_user]");
@@ -85,7 +84,7 @@ require_once('include/_header.php');
         </div>
 
         <div class="row d-flex justify-content-around mt-2">
-            <div class="col-6 mx-0 px-0"><img src="<?= UPLOAD_FOLDER . $annonce['photo'] ?>" alt="" width="500" height="330" style="object-fit: cover"></div>
+            <div class="col-6 mx-0 px-0"><img src="<?= UPLOAD_URL . $annonce['photo'] ?>" alt="" width="500" height="330" style="object-fit: contain"></div>
             <div class="col-6">
                 <h6>Description</h6>
                 <p><?= $annonce['desc_longue'] ?></p>
@@ -173,16 +172,8 @@ require_once('include/_header.php');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>" method="post" class="">
+                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>" method="post">
                         <div class="modal-body">
-<!--                            <div class="row">-->
-<!--                                <div class="col-6">-->
-<!--                                    <input type="text" name="pseudo" id="pseudo" placeholder="Votre pseudo" class="form-control">-->
-<!--                                </div>-->
-<!--                                <div class="col-6">-->
-<!--                                    <input type="text" name="email" id="email" placeholder="Votre email" class="form-control">-->
-<!--                                </div>-->
-<!--                            </div>-->
                             <div class="row">
                                 <div class="col-12">
                                     <textarea name="commentaire" id="commentaire" rows="6" placeholder="Écrivez votre commentaire ici" class="form-control"></textarea>

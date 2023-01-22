@@ -8,6 +8,7 @@ session_start();
 
 // Définition de constantes
 define('BASE_URL', "http://troc/");
-define('UPLOAD_FOLDER', BASE_URL .'uploads/');
+define('UPLOAD_URL', BASE_URL . 'uploads/');
+define('UPLOAD_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/uploads/');
 
 require_once ('_fonctions.php');

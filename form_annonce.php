@@ -1,6 +1,78 @@
 <?php
 require_once('include/_init.php');
 
+if($_POST) {
+
+    extract($_POST);
+
+    if(isset($_GET['action']) && $_GET['action'] === 'create') {
+
+        if($_FILES) {
+
+//            dd($_FILES);
+            $mimeTypesAllowed = ['image/jpeg', 'image/png'];
+//
+//            $key = 0;
+//            $total = count($_FILES['photo']['name']);
+            # Pour chaque fichier
+//            while($key < $total) {
+
+                # Séparation du nom et de l'extension du fichier
+                $filename = pathinfo($_FILES['photo']['name'], PATHINFO_FILENAME);
+
+                # Variabilisation de l'extension du fichier
+                $extension = '.' . pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+
+                # Slug du nom du fichier
+                $slugFilename = slugify($filename);
+
+                # Reconstruction du nom de fichier avec un id unique
+                $newFilename = $slugFilename . '_' . uniqid() . $extension;
+
+                $tmpFilePath = $_FILES['photo']['tmp_name'];
+                # Vérification du type de fichier par son Mime Type
+                if(in_array($_FILES['photo']['type'], $mimeTypesAllowed, true) && !empty($tmpFilePath)) {
+
+                    $newFilePath = UPLOAD_FOLDER . $newFilename;
+
+                    if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                        $queryPhoto = $bdd->query("INSERT INTO photo VALUES (NULL, '".$newFilename."', NULL, NULL, NULL, NULL)");
+
+                        $idPhoto = $bdd->lastInsertId();
+
+                        $queryAnnonce = $bdd->prepare("INSERT INTO annonce VALUES (NULL, :titre, :desc_courte, :desc_longue, :prix, :photo, :pays, :ville, :adresse, :cp, :id_user, :id_photo, :id_categorie, :created_at, NULL, NULL)");
+
+                        $queryAnnonce->bindValue(':titre', $titre);
+                        $queryAnnonce->bindValue(':desc_courte', $desc_courte);
+                        $queryAnnonce->bindValue(':desc_longue', $desc_longue);
+                        $queryAnnonce->bindValue(':prix', $prix);
+                        $queryAnnonce->bindValue(':photo', $newFilename);
+                        $queryAnnonce->bindValue(':pays', $pays);
+                        $queryAnnonce->bindValue(':ville', $ville);
+                        $queryAnnonce->bindValue(':adresse', $adresse);
+                        $queryAnnonce->bindValue(':cp', $cp);
+                        $queryAnnonce->bindValue(':id_user', $_SESSION['user']['id_user']);
+                        $queryAnnonce->bindValue(':id_photo', $idPhoto);
+                        $queryAnnonce->bindValue(':id_categorie',$categorie);
+                        $queryAnnonce->bindValue(':created_at', date('Y/m/d H:i'));
+
+                        if ($queryAnnonce->execute()) {
+
+                            $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                            <strong>Tout s\'est bien passé ! </strong>Votre annonce est bien enregistrée.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>';
+                        }
+
+                    }
+                }
+                # Incrémentation pour éviter une boucle infinie
+//                $key++;
+//            }# end while()
+        } # end if($_FILES)
+    }# end if(create)
+} # end if($_POST)
+
 
 $query = $bdd->query("SELECT * FROM categorie;");
 
@@ -14,6 +86,10 @@ require_once('include/_header.php');
 
 <div class="row d-flex justify-content-between mt-3">
     <h1 class="text-center mx-auto mt-3">Publier une annonce</h1>
+
+    <div class="row">
+        <?= $confirmMessage ?? '' ?>
+    </div>
 
     <div class="container-fluid col-md-10 px-4">
 
@@ -33,8 +109,8 @@ require_once('include/_header.php');
                     <label for="categorie" class="form-label">Catégorie de l'annonce</label>
                     <select name="categorie" id="categorie" class="form-select">
                         <?php if(isset($categories) & !empty($categories)) : ?>
-                        <?php foreach($categories as $categorie) : ?>
-                                <option value="<?= strtolower($categorie['titre']) ?>"><?= ucfirst($categorie['titre']) . ' (' . $categorie['mots_clefs'] .')' ?></option>
+                        <?php foreach($categories as $category) : ?>
+                                <option value="<?= $category['id_categorie'] ?>"><?= ucfirst($category['titre']) . ' (' . $category['mots_clefs'] .')' ?></option>
                         <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -58,6 +134,14 @@ require_once('include/_header.php');
                     <input type="text" id="prix" name="prix" class="form-control">
                 </div>
             </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <!-- Si "multiple" et pour avoir tous les fichiers dans $_FILES, le 'name' doit comporter des crochets : ex.: photo[] -->
+                    <input type="file" name="photo" id="photo" class="form-control" accept=".jpg, .jpeg, .png">
+                </div>
+            </div>
+
+
             <h3 class="text-center text-warning my-4 bg-dark rounded mx-auto col-md-8">2 - Adresse</h3>
 
             <div class="row mt-4">
@@ -81,7 +165,7 @@ require_once('include/_header.php');
                 </div>
             </div>
 
-            <button type="submit" class="d-block mx-auto mt-3 btn btn-success col-3">Publier</button>
+            <button type="submit" class="d-block mx-auto col-4 my-4 btn btn-success">Publier</button>
         </form>
     </div>
 
