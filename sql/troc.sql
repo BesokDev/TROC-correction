@@ -89,16 +89,16 @@ CREATE TABLE IF NOT EXISTS annonce (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS note (
   `id_note` INT NOT NULL AUTO_INCREMENT,
-  `id_user1` INT NULL,
-  `id_user2` INT NOT NULL,
+  `id_user_notant` INT NOT NULL,
+  `id_user_note` INT NOT NULL,
   `note` INT(3) NOT NULL,
   `avis` TEXT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME NULL,
   `deleted_at` DATETIME NULL,
   PRIMARY KEY (`id_note`),
-    FOREIGN KEY (`id_user1`) REFERENCES user(`id_user`),
-    FOREIGN KEY (`id_user2`) REFERENCES user(`id_user`)
+    FOREIGN KEY (`id_user_notant`) REFERENCES user(`id_user`),
+    FOREIGN KEY (`id_user_note`) REFERENCES user(`id_user`)
 ) ENGINE = InnoDB;
 
 

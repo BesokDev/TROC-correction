@@ -75,7 +75,7 @@ require_once('include/_header.php');
 
 <?php if(isset($error)) echo $error; ?>
 
-<form class="col-md-4 mx-auto my-5" method="POST">
+<form class="col-md-4 mx-auto my-5" method="post" id="connexion">
 
     <div class="form-group">
         <label for="pseudo"> Pseudo</label>
