@@ -30,17 +30,17 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <?php if ( ! isConnect()) : ?>
-                                <li><a class="dropdown-item" href="../inscription.php">Inscription</a></li>
-                                <li><a class="dropdown-item" href="../connexion.php">Connexion</a></li>
+                                    <li><a class="dropdown-item" href="../connexion.php">Connexion</a></li>
+                                    <li><a class="dropdown-item" href="../inscription.php">Inscription</a></li>
                                 <?php endif ?>
                                 <?php if(isAdminConnect()): ?>
                                     <li><a class="dropdown-item" href="../espace_admin/index_admin.php">Espace admin</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="../form_annonce.php">Publier une annonce</a></li>
-                                <li><hr class="dropdown-divider"></li>
                                 <?php if(isConnect()) : ?>
-                                <li><a class="dropdown-item" href="#">Profil</a></li>
-                                <li><a class="dropdown-item" href="../connexion.php?action=deconnexion">Déconnexion</a></li>
+                                    <li><a class="dropdown-item" href="../form_annonce.php">Publier une annonce</a></li>
+                                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                                    <li><a class="dropdown-item" href="../connexion.php?action=deconnexion">Déconnexion</a></li>
                                 <?php endif ?>
                             </ul>
                         </li>
