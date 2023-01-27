@@ -49,7 +49,7 @@ require_once('include/_header.php');
             <button type="submit" class="btn btn-sm btn-info col-6 d-block mx-auto">Appliquer</button>
         </form>
         <div class="row mt-3">
-            <div class="col-12 fst-italic text-center text-warning"><?= $totalAnnonce ?> articles</div>
+            <div class="col-12 fst-italic text-center text-warning"><?= $totalAnnonce ?? '0' ?> résultats</div>
         </div>
     </div>
 
