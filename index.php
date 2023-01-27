@@ -73,30 +73,33 @@ require_once('include/_header.php');
             <hr class="col-12">
         </div>
 
-        <?php foreach($annonces as $annonce) : ?>
-            <div class="row">
-                <a href="show_annonce_detail.php?id_annonce=<?= $annonce['id_annonce'] ?>" class="text-decoration-none">
-                    <div class="card mb-3" style="border: none !important;">
-                        <div class="row">
-                            <div class="col-4 ms-0 ps-0">
-                                <img src="<?= UPLOAD_URL . $annonce['photo'] ?>" class="rounded-start" alt="Photo d'annonce manquante" width="250" height="150" style="object-fit: contain;">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body my-0 py-0">
-                                    <h5 class="card-title text-primary"><?= $annonce['titre'] ?></h5>
-                                    <p class="card-text text-dark"><?= $annonce['desc_courte'] ?></p>
-                                    <div class="row text-dark pt-5">
-                                        <div class="col-6"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['prenom'];  ?> ⭐⭐⭐⭐⭐</div>
-                                        <div class="col-6 text-end"><?= $annonce['prix'] ?> €</div>
+        <?php if(isset($annonces) && !empty($annonces)):  ?>
+            <?php foreach($annonces as $annonce) : ?>
+                <div class="row">
+                    <a href="show_annonce_detail.php?id_annonce=<?= $annonce['id_annonce'] ?>" class="text-decoration-none">
+                        <div class="card mb-3" style="border: none !important;">
+                            <div class="row">
+                                <div class="col-4 ms-0 ps-0">
+                                    <img src="<?= UPLOAD_URL . $annonce['photo'] ?>" class="rounded-start" alt="Photo d'annonce manquante" width="250" height="150" style="object-fit: contain;">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body my-0 py-0">
+                                        <h5 class="card-title text-primary"><?= $annonce['titre'] ?></h5>
+                                        <p class="card-text text-dark"><?= $annonce['desc_courte'] ?></p>
+                                        <div class="row text-dark pt-5">
+                                            <div class="col-6"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['prenom'];  ?> ⭐⭐⭐⭐⭐</div>
+                                            <div class="col-6 text-end"><?= $annonce['prix'] ?> €</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-                <hr class="col-12">
-            </div>
-        <?php endforeach; ?>
+                    </a>
+                    <hr class="col-12">
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
         <div class="text-center my-4">
             <a href="#" class="text-decoration-none">Voir plus</a>
         </div>

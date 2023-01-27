@@ -16,7 +16,6 @@ if(isset($_GET['action']) && $_GET['action'] === 'delete_commentaire') {
 }
 
 if($_POST) {
-//    dd($_POST);
 
     extract($_POST);
 
@@ -28,19 +27,42 @@ if($_POST) {
     }
 
     if(!isset($error)) {
-        $query = $bdd->prepare("INSERT INTO commentaire VALUES (NULL, :id_user, :id_annonce, :commentaire, :created_at, NULL, NULL)");
 
-        $query->bindValue(':id_user', $_SESSION['user']['id_user']);
-        $query->bindValue(':id_annonce', $_GET['id_annonce']);
-        $query->bindValue(':commentaire', $commentaire);
-        $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+        if (isset($_GET['form']) && $_GET['form'] === 'commentaire') {
 
-        if($query->execute()) {
-            $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
-                            <strong>Votre commentaire </strong>a bien été enregistré.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>';
+            $query = $bdd->prepare("INSERT INTO commentaire VALUES (NULL, :id_user, :id_annonce, :commentaire, :created_at, NULL, NULL)");
 
+            $query->bindValue(':id_user', $_SESSION['user']['id_user']);
+            $query->bindValue(':id_annonce', $_GET['id_annonce']);
+            $query->bindValue(':commentaire', $commentaire);
+            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+
+            if ($query->execute()) {
+                $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                                <strong>Votre commentaire </strong>a bien été enregistré.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+            }
+        }
+
+        if (isset($_GET['form']) && $_GET['form'] === 'note') {
+
+            $query = $bdd->prepare("INSERT INTO note VALUES (NULL, :id_user_notant, :id_user_auteur, :note, :avis, :created_at, NULL, NULL)");
+
+            $query->bindValue(':id_user_notant', $_SESSION['user']['id_user']);
+            $query->bindValue(':id_user_auteur', $id_user_auteur);
+            # (int) permet de convertir la string en integer
+//            $query->bindValue(':note', (int)$note);
+            $query->bindValue(':note', $note);
+            $query->bindValue(':avis', $avis);
+            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+
+            if ($query->execute()) {
+                $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                                <strong>Votre note et avis </strong>ont bien été enregistrés.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+            }
         }
     }
 }
@@ -78,7 +100,7 @@ require_once('include/_header.php');
         <div class="row d-flex justify-content-around mt-3">
             <h3 class="col-6 mx-0 px-0"><?= ucfirst($annonce['titre']) ?></h3>
             <div class="col-6 text-end mx-0 px-0">
-                <a class="btn btn-success btn-sm">Contacter <?= $membre['prenom'] ?></a>
+                <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalContact" >Contacter <?= $membre['prenom'] ?></a>
             </div>
             <hr class="mt-2 col-12 bg-warning">
         </div>
@@ -125,8 +147,10 @@ require_once('include/_header.php');
                                     <span >posté le : <?= $commentaire['created_at'] ?></span>
                                 </div>
                                 <div class="col-2 text-end">
-                                    <?php if($commentaire['id_user'] == $_SESSION['user']['id_user']) : ?>
-                                        <a href="?action=delete_commentaire&id_commentaire=<?= $commentaire['id_commentaire'] ?>&id_annonce=<?= $annonce['id_annonce'] ?>" class="text-danger" title="Supprimer votre commentaire"><i class="bi bi-x-circle"></i></a>
+                                    <?php if(isConnect()) : ?>
+                                        <?php if($commentaire['id_user'] == $_SESSION['user']['id_user']) : ?>
+                                            <a href="?action=delete_commentaire&id_commentaire=<?= $commentaire['id_commentaire'] ?>&id_annonce=<?= $annonce['id_annonce'] ?>" class="text-danger" title="Supprimer votre commentaire"><i class="bi bi-x-circle"></i></a>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -155,7 +179,7 @@ require_once('include/_header.php');
 
         <div class="row mt-3 d-flex justify-content-around">
             <?php if( isConnect()) : ?>
-                <div class="col-6 mx-0 px-0"><a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal">Déposer un commentaire ou une note</a></div>
+                <div class="col-6 mx-0 px-0"><a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Déposer un commentaire ou une note</a></div>
             <?php else : ?>
                 <div class="col-6 mx-0 px-0"><a href="connexion.php" class="text-decoration-none">Se connecter pour laisser un commentaire</a></div>
             <?php endif; ?>
@@ -163,8 +187,31 @@ require_once('include/_header.php');
             <div class="col-6 mx-0 px-0 text-end"><a href="index.php" class="text-decoration-none">Revenir vers les annonces</a></div>
         </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!--        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+        <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalToggleLabel">Faites votre choix</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-6">
+                                <button class="btn btn-outline-primary me-3" data-bs-target="#modalCommentaire" data-bs-toggle="modal" data-bs-dismiss="modal">Déposer un commentaire</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-primary" data-bs-target="#modalNote" data-bs-toggle="modal" data-bs-dismiss="modal">Laisser une note et un avis</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Commentaire -->
+        <div class="modal fade" id="modalCommentaire" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -172,7 +219,7 @@ require_once('include/_header.php');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>" method="post">
+                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>&form=commentaire" method="post">
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-12">
@@ -182,6 +229,7 @@ require_once('include/_header.php');
 
                         </div>
                         <div class="modal-footer">
+<!--                            <button class="me-auto btn btn-sm btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i> Revenir aux choix</button>-->
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                             <button type="submit" class="btn btn-success">Envoyer</button>
                         </div>
@@ -190,6 +238,89 @@ require_once('include/_header.php');
                 </div>
             </div>
         </div>
+        <!-- Modal Note -->
+        <div class="modal fade" id="modalNote" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning" id="exampleModalLabel">Laisser une note</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>&form=note" method="post">
+                        <div class="modal-body">
+                            <div class="row input-group">
+                                <div class="col-4">
+                                    <select name="note" id="note" class="form-select">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" placeholder="Votre email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <textarea name="avis" id="avis" rows="6" placeholder="Écrivez votre avis ici" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+<!--                            <button class="me-auto btn btn-sm btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i> Revenir aux choix</button>-->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success">Envoyer</button>
+                        </div>
+
+                        <input type="hidden" name="id_user_auteur" value="<?= $annonce['id_user'] ?>">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- Modal Contact -->
+        <div class="modal fade" id="modalContact" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning" id="exampleModalLabel">Contacter la personne</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>&form=note" method="post">
+                        <div class="modal-body">
+
+                            <div class="row input-group mx-auto">
+                                <div class="col-6">
+                                    <input type="text" name="email" placeholder="Votre email" class="form-control">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name="sujet" placeholder="Quel est le sujet ?" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row input-group mt-3 mx-auto">
+                                <div class="col-12">
+                                    <textarea name="corps" rows="4" placeholder="Écrivez votre email ici" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <!--                            <button class="me-auto btn btn-sm btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle" data-bs-dismiss="modal"><i class="bi bi-arrow-left"></i> Revenir aux choix</button>-->
+                            <small class="me-auto text-warning"><i class="bi bi-phone"></i> Téléphone : <span class="text-decoration-underline"><?= $membre['telephone'] ?></span></small>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success">Envoyer à <?= $membre['email'] ?></button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+<!--        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
     </div>
 </div>
