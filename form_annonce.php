@@ -52,7 +52,7 @@ if($_POST) {
                     $queryAnnonce->bindValue(':id_user', $_SESSION['user']['id_user']);
                     $queryAnnonce->bindValue(':id_photo', $idPhoto);
                     $queryAnnonce->bindValue(':id_categorie',$categorie);
-                    $queryAnnonce->bindValue(':created_at', date('Y/m/d H:i'));
+                    $queryAnnonce->bindValue(':created_at', date('Y/m/d'));
 
                     if ($queryAnnonce->execute()) {
 

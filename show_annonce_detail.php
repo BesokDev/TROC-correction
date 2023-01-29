@@ -114,9 +114,9 @@ require_once('include/_header.php');
         </div>
 
         <div class="row d-flex justify-content-around mt-5">
-            <div class="col-4 text-center"><i class="bi bi-calendar-check h5 text-warning"></i> Publiée le : <?= $annonce['created_at'] ?></div>
+            <div class="col-3 text-center"><i class="bi bi-calendar-check h5 text-warning"></i> Publiée le : <?= $annonce['created_at'] ?></div>
             <div class="col-3 text-center"><i class="bi bi-person-fill h5 text-warning"> </i><a href="" class="text-decoration-none"><?= ucfirst($membre['prenom']) ?></a> ⭐⭐⭐⭐⭐</div>
-            <div class="col-1 text-center"><i class="bi bi-currency-euro h5 text-warning"> </i> <?= $annonce['prix'] ?> €</div>
+            <div class="col-2 text-center"><i class="bi bi-currency-euro h5 text-warning"> </i> <?= $annonce['prix'] ?> €</div>
             <div class="col-4 text-center"><i class="bi bi-geo-alt-fill h5 text-warning"> </i> <?= $annonce['adresse'] . ', ' . strtoupper($annonce['cp']) . ' ' . ucfirst($annonce['ville']) ?></div>
         </div>
 

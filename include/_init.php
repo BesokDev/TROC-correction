@@ -1,8 +1,11 @@
 <?php
 
 // Connexion à la BDD avecPDO
-$bdd = new PDO('mysql:host=localhost:3306;dbname=troc', 'root','', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
+try {
+    $bdd = new PDO('mysql:host=localhost:3306;dbname=troc', 'root','', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+} catch (PDOException $exception) {
+    echo $exception->getMessage(); die("Veuillez créer la BDD nommée 'troc' pour continuer.");
+}
 // Démarrage d'une session php, nécessaire pour la connexion
 session_start();
 
