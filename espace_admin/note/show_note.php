@@ -88,11 +88,11 @@ require_once('../include/_header_admin.php');
                                 <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
                                 <a href="?action=update&id_note=<?= $note['id_note'] ?>"
                                    class="text-primary"
-                                   title="Modifier un commentaire"><i class="bi bi-pencil-fill"></i></a>
+                                   title="Modifier la note"><i class="bi bi-pencil-fill"></i></a>
 
                                 <a href="?action=delete&id_note=<?= $note['id_note'] ?>"
                                    class="ms-2 text-danger"
-                                   title="Supprimer un commentaire"
+                                   title="Supprimer la note"
                                    onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>
 
                             </div>

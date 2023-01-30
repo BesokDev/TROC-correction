@@ -68,11 +68,6 @@ if($_POST) {
     }# end if(create)
 } # end if($_POST)
 
-if(isset($_GET['action']) && $_GET['action'] === 'update') {
-# TODO: remove this ?
-}
-
-
 $query = $bdd->query("SELECT * FROM categorie ORDER BY titre ASC;");
 
 if($query->rowCount()) {
