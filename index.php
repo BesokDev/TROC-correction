@@ -252,10 +252,11 @@ require_once('include/_header.php');
                     </a>
                     <hr class="col-12">
                 </div>
-                <div class="text-center my-4">
-                    <a href="#" class="text-decoration-none">Voir plus</a>
-                </div>
             <?php endforeach ?>
+
+            <div class="text-center my-4">
+                <a href="#" class="text-decoration-none">Voir plus</a>
+            </div>
         <?php else : ?>
             <div class="row">
                 <div class="card mb-3" style="border: none !important;">
