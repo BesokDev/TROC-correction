@@ -45,9 +45,6 @@ if($_POST) {
                 if (move_uploaded_file($tmpFilePath, $newFilePath)) {
                     $queryPhoto = $bdd->query("UPDATE photo SET photo1='".$newFilename."' WHERE id_photo=$annonce[id_photo]");
 
-                    # Permet de récupérer le dernier id inséré, ici dans la table 'photo'
-                    $lastIdPhoto = $bdd->lastInsertId();
-
                     # Suppression de l'ancien fichier de photo (voir dossier 'troc/uploads')
                     unlink(UPLOAD_FOLDER . $current_photo);
                 }
@@ -66,7 +63,6 @@ if($_POST) {
         $query->bindValue(':adresse', $adresse);
         $query->bindValue(':cp', $cp);
         $query->bindValue(':id_user', $id_user);
-//        $query->bindValue(':id_photo', $lastIdPhoto ?? '');
         $query->bindValue(':id_categorie', $categorie);
         $query->bindValue(':updated_at', date('Y/m/d H:i'));
         $query->bindValue(':id', $_GET['id_annonce']);
