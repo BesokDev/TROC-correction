@@ -7,25 +7,42 @@ if( ! isAdminConnect()) {
 }
 
 if(isset($_GET['action']) && $_GET['action'] === 'show') {
-    dd("faire la redirection vers la page show annonce");
+    header("Location: ../../show_annonce_detail.php?id_annonce=".$_GET["amp;id_annonce"]);
 }
 
 // Si l'admin a cliqué sur "supprimer"
 if (isset($_GET['action']) && $_GET['action'] === 'delete') {
-    $query = $bdd->prepare("DELETE FROM annonce WHERE id_annonce=:id_annonce");
+
+       $query = $bdd->prepare("DELETE FROM annonce WHERE id_annonce=:id_annonce");
     $query->bindValue(':id_annonce', $_GET['amp;id_annonce']);
 
-    if ($query->execute()) {
+    if ($query->execute() && $bdd->query("DELETE FROM photo WHERE id_photo=". $_GET['amp;id_photo']) !== false) {
+        // Suppression de la photo de l'annonce
+        unlink(UPLOAD_FOLDER . $_GET['amp;photo']);
+
         $confirmSupp = '<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                            <strong>L\'annonce </strong>a bien été supprimé.
+                            <strong>L\'annonce </strong>a bien été supprimée.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>';
     }
 }
 
-if (isset($_GET['action']) && $_GET['action'] === 'update') {
-    dd('il faut faire l\'update');
+# Message pour la modification en fonction de son état
+if(isset($_GET['update_success'])) {
+    if($_GET['update_success'] === 'true') {
+        $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                                        <strong>Tout s\'est bien passé ! </strong>L\'annonce est bien modifiée.
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>';
+    } else {
+        $confirmMessage = '<div class="alert alert-warning alert-dismissible fade show text-center mt-3" role="alert">
+                                    <strong>Une erreur s\'est produite ! </strong>Veuillez réessayer la modification.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>';
+    }
 }
+
+
 
 //$query = $bdd->query("SELECT * FROM annonce WHERE deleted_at IS NULL");
 $query = $bdd->query("SELECT * FROM annonce");
@@ -49,14 +66,15 @@ require_once('../include/_header_admin.php');
         <li class="breadcrumb-item active">Annonces</li>
     </ol>
 
-    <?php
-        if( isset($_GET['action']) && $_GET['action'] === 'update') {
-            include '_form_annonce.php';
-        }
-    ?>
+<!--    --><?php
+//        if( isset($_GET['action']) && $_GET['action'] === 'update') {
+//            include '_form_annonce.php';
+//        }
+//    ?>
 
     <div class="row">
         <?= $confirmSupp ?? '' ?>
+        <?= $confirmMessage ?? '' ?>
     </div>
 
     <div class="row">

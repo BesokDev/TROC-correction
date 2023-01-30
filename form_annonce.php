@@ -1,6 +1,10 @@
 <?php
 require_once('include/_init.php');
 
+if(!isConnect()) {
+    header("Location: connexion.php");
+}
+
 if($_POST) {
 
     extract($_POST);
@@ -9,72 +13,67 @@ if($_POST) {
 
         if($_FILES) {
 
-//            dd($_FILES);
             $mimeTypesAllowed = ['image/jpeg', 'image/png'];
-//
-//            $key = 0;
-//            $total = count($_FILES['photo']['name']);
-            # Pour chaque fichier
-//            while($key < $total) {
 
-                # Séparation du nom et de l'extension du fichier
-                $filename = pathinfo($_FILES['photo']['name'], PATHINFO_FILENAME);
+            # Séparation du nom et de l'extension du fichier
+            $filename = pathinfo($_FILES['photo']['name'], PATHINFO_FILENAME);
 
-                # Variabilisation de l'extension du fichier
-                $extension = '.' . pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            # Variabilisation de l'extension du fichier
+            $extension = '.' . pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
 
-                # Slug du nom du fichier
-                $slugFilename = slugify($filename);
+            # Slug du nom du fichier
+            $slugFilename = slugify($filename);
 
-                # Reconstruction du nom de fichier avec un id unique
-                $newFilename = $slugFilename . '_' . uniqid() . $extension;
+            # Reconstruction du nom de fichier avec un id unique
+            $newFilename = $slugFilename . '_' . uniqid() . $extension;
 
-                $tmpFilePath = $_FILES['photo']['tmp_name'];
-                # Vérification du type de fichier par son Mime Type
-                if(in_array($_FILES['photo']['type'], $mimeTypesAllowed, true) && !empty($tmpFilePath)) {
+            $tmpFilePath = $_FILES['photo']['tmp_name'];
+            # Vérification du type de fichier par son Mime Type
+            if(in_array($_FILES['photo']['type'], $mimeTypesAllowed, true) && !empty($tmpFilePath)) {
 
-                    $newFilePath = UPLOAD_FOLDER . $newFilename;
+                $newFilePath = UPLOAD_FOLDER . $newFilename;
 
-                    if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-                        $queryPhoto = $bdd->query("INSERT INTO photo VALUES (NULL, '".$newFilename."', NULL, NULL, NULL, NULL)");
+                if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    $queryPhoto = $bdd->query("INSERT INTO photo VALUES (NULL, '".$newFilename."', NULL, NULL, NULL, NULL)");
 
-                        $idPhoto = $bdd->lastInsertId();
+                    $idPhoto = $bdd->lastInsertId();
 
-                        $queryAnnonce = $bdd->prepare("INSERT INTO annonce VALUES (NULL, :titre, :desc_courte, :desc_longue, :prix, :photo, :pays, :ville, :adresse, :cp, :id_user, :id_photo, :id_categorie, :created_at, NULL, NULL)");
+                    $queryAnnonce = $bdd->prepare("INSERT INTO annonce VALUES (NULL, :titre, :desc_courte, :desc_longue, :prix, :photo, :pays, :ville, :adresse, :cp, :id_user, :id_photo, :id_categorie, :created_at, NULL, NULL)");
 
-                        $queryAnnonce->bindValue(':titre', $titre);
-                        $queryAnnonce->bindValue(':desc_courte', $desc_courte);
-                        $queryAnnonce->bindValue(':desc_longue', $desc_longue);
-                        $queryAnnonce->bindValue(':prix', $prix);
-                        $queryAnnonce->bindValue(':photo', $newFilename);
-                        $queryAnnonce->bindValue(':pays', $pays);
-                        $queryAnnonce->bindValue(':ville', $ville);
-                        $queryAnnonce->bindValue(':adresse', $adresse);
-                        $queryAnnonce->bindValue(':cp', $cp);
-                        $queryAnnonce->bindValue(':id_user', $_SESSION['user']['id_user']);
-                        $queryAnnonce->bindValue(':id_photo', $idPhoto);
-                        $queryAnnonce->bindValue(':id_categorie',$categorie);
-                        $queryAnnonce->bindValue(':created_at', date('Y/m/d H:i'));
+                    $queryAnnonce->bindValue(':titre', $titre);
+                    $queryAnnonce->bindValue(':desc_courte', $desc_courte);
+                    $queryAnnonce->bindValue(':desc_longue', $desc_longue);
+                    $queryAnnonce->bindValue(':prix', (int)$prix);
+                    $queryAnnonce->bindValue(':photo', $newFilename);
+                    $queryAnnonce->bindValue(':pays', $pays);
+                    $queryAnnonce->bindValue(':ville', $ville);
+                    $queryAnnonce->bindValue(':adresse', $adresse);
+                    $queryAnnonce->bindValue(':cp', $cp);
+                    $queryAnnonce->bindValue(':id_user', $_SESSION['user']['id_user']);
+                    $queryAnnonce->bindValue(':id_photo', $idPhoto);
+                    $queryAnnonce->bindValue(':id_categorie',$categorie);
+                    $queryAnnonce->bindValue(':created_at', date('Y/m/d'));
 
-                        if ($queryAnnonce->execute()) {
+                    if ($queryAnnonce->execute()) {
 
-                            $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
-                            <strong>Tout s\'est bien passé ! </strong>Votre annonce est bien enregistrée.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>';
-                        }
-
+                        $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
+                        <strong>Tout s\'est bien passé ! </strong>Votre annonce est bien enregistrée.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
                     }
+
                 }
-                # Incrémentation pour éviter une boucle infinie
-//                $key++;
-//            }# end while()
+            }
         } # end if($_FILES)
     }# end if(create)
 } # end if($_POST)
 
+if(isset($_GET['action']) && $_GET['action'] === 'update') {
+# TODO: remove this ?
+}
 
-$query = $bdd->query("SELECT * FROM categorie;");
+
+$query = $bdd->query("SELECT * FROM categorie ORDER BY titre ASC;");
 
 if($query->rowCount()) {
     $categories = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -169,6 +168,6 @@ require_once('include/_header.php');
         </form>
     </div>
 
-    </div>
+</div>
 
 <?php require_once('include/_footer.php') ?>

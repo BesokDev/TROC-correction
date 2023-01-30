@@ -18,9 +18,7 @@ function isConnect(): bool
 ///
 function isAdminConnect(): bool
 {
-
     return isConnect() && $_SESSION['user']['statut'] === '1';
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
