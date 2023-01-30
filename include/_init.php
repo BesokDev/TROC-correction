@@ -11,7 +11,7 @@ try {
 session_start();
 
 // Définition de constantes
-define('BASE_URL', "http://troc/");
+define('BASE_URL', "http://". $_SERVER['HTTP_HOST'] ."/");
 define('UPLOAD_URL', BASE_URL . 'uploads/');
 define('UPLOAD_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/uploads/');
 
