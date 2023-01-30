@@ -38,11 +38,10 @@ function slugify($text): string {
         'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-'
     ];
 
-    // -- Retirer les espaces blancs
-//    $text = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $text);
+    // Retirer les espaces blancs
     $text = preg_replace('~[^\pL\d]+~u', '-', $text);
 
-    // -- On retourne le slug
+    // On retourne le slug
     return strtolower(strtr($text, $table));
 }
 

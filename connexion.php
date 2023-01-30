@@ -32,8 +32,6 @@ if($_POST)
         // password_verify('la string du form', 'le mdp en bdd hashé') ===> compare une clé de hashage (le mdp en bdd) à une chaine de caractères (le mdp saisi dans le formulaire) 
         if (password_verify($password, $user['password']))
         {
-           // echo "MDP ok";
-
            // On passe en revue toutes les données de l'internaute récupérées en BDD de l'internaute qui a correctement remplit le formulaire de connexion
             // $user : tableau ARRAY contenant toute les données de l'utilisateur en BDD
            foreach($user as $key => $value)

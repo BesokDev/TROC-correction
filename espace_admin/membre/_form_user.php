@@ -20,7 +20,7 @@ if($_POST){
 
     extract($_POST);
 
-    // class bootstrap : bordure rouge
+    // classe bootstrap : bordure rouge
     $border = "border border-danger";
 
     if (empty($pseudo)) {

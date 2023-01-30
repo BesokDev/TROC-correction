@@ -73,7 +73,6 @@ if($_GET) {
             case 'date_desc': $queryString .= " ORDER by created_at DESC";
                 break;
             case 'vendeur': $queryString = "SELECT * FROM annonce WHERE id_user IN (SELECT id_user FROM user WHERE id_user IN (SELECT id_user_auteur FROM note GROUP BY id_user_auteur HAVING ROUND(AVG(note), 1) >= 4) );";
-//            dd($bdd->query($queryString)->fetchAll(PDO::FETCH_ASSOC));
                 break;
             default: $queryString .= '';
                 break;

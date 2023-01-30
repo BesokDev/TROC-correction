@@ -2,22 +2,17 @@
 
 require_once('include/_init.php');
 
-//if(isConnect())
-//{
-//    header("location: profil.php");
-//}
+if(isConnect()) {
+    header("location: profil.php");
+}
 
 // 2. Contrôler en PHP que l'on réceptionne bien toutes les données saisies dans le formulaire
 
-// echo "<pre>"; print_r($_POST); echo "</pre>";
-
 extract($_POST);
-
-//dd($_POST);
 
 if($_POST && !empty($_POST))
 {
-    // class bootstrap : bordure rouge
+    // classe bootstrap : bordure rouge
     $border="border border-danger";
 
     // 3. Contrôler la validité du pseudo, si le pseudo est existant en BDD, alors on affiche un message d'erreur. Faites de même pour le champ 'email'

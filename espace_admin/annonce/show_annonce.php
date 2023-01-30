@@ -66,12 +66,6 @@ require_once('../include/_header_admin.php');
         <li class="breadcrumb-item active">Annonces</li>
     </ol>
 
-<!--    --><?php
-//        if( isset($_GET['action']) && $_GET['action'] === 'update') {
-//            include '_form_annonce.php';
-//        }
-//    ?>
-
     <div class="row">
         <?= $confirmSupp ?? '' ?>
         <?= $confirmMessage ?? '' ?>
@@ -129,7 +123,6 @@ require_once('../include/_header_admin.php');
                                             <a href="?action=show&id_annonce=<?= $annonce['id_annonce'] ?>"
                                                class="text-success"
                                                title="Voir l'annonce"><i class="bi bi-eye-fill"></i></a>
-                                            <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
                                             <a href="admin_form_annonce?action=update&id_annonce=<?= $annonce['id_annonce'] ?>"
                                                class="text-primary"
                                                title="Modifier une annonce"><i class="bi bi-pencil-fill"></i></a>
