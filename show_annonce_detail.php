@@ -35,7 +35,7 @@ if($_POST) {
             $query->bindValue(':id_user', $_SESSION['user']['id_user']);
             $query->bindValue(':id_annonce', $_GET['id_annonce']);
             $query->bindValue(':commentaire', $commentaire);
-            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+            $query->bindValue(':created_at', date('Y-m-d'));
 
             if ($query->execute()) {
                 $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
@@ -55,7 +55,7 @@ if($_POST) {
 //            $query->bindValue(':note', (int)$note);
             $query->bindValue(':note', $note);
             $query->bindValue(':avis', $avis);
-            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+            $query->bindValue(':created_at', date('Y-m-d'));
 
             if ($query->execute()) {
                 $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
@@ -114,9 +114,9 @@ require_once('include/_header.php');
         </div>
 
         <div class="row d-flex justify-content-around mt-5">
-            <div class="col-4 text-center"><i class="bi bi-calendar-check h5 text-warning"></i> Publiée le : <?= $annonce['created_at'] ?></div>
+            <div class="col-3 text-center"><i class="bi bi-calendar-check h5 text-warning"></i> Publiée le : <?= $annonce['created_at'] ?></div>
             <div class="col-3 text-center"><i class="bi bi-person-fill h5 text-warning"> </i><a href="" class="text-decoration-none"><?= ucfirst($membre['prenom']) ?></a> ⭐⭐⭐⭐⭐</div>
-            <div class="col-1 text-center"><i class="bi bi-currency-euro h5 text-warning"> </i> <?= $annonce['prix'] ?> €</div>
+            <div class="col-2 text-center"><i class="bi bi-currency-euro h5 text-warning"> </i> <?= $annonce['prix'] ?> €</div>
             <div class="col-4 text-center"><i class="bi bi-geo-alt-fill h5 text-warning"> </i> <?= $annonce['adresse'] . ', ' . strtoupper($annonce['cp']) . ' ' . ucfirst($annonce['ville']) ?></div>
         </div>
 

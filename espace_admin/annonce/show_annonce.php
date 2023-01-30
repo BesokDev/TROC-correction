@@ -77,67 +77,80 @@ require_once('../include/_header_admin.php');
         <?= $confirmMessage ?? '' ?>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            Toutes les annonces en ligne
-        </div>
-        <div class="card-body">
-            <table id="datatablesSimple" class="table">
-                <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Titre</th>
-                    <th class="text-center">Description courte</th>
-                    <th class="text-center">Description longue</th>
-                    <th class="text-center">Prix</th>
-                    <th class="text-center">Photo</th>
-                    <th class="text-center">Pays</th>
-                    <th class="text-center">Ville</th>
-                    <th class="text-center">Adresse</th>
-                    <th class="text-center">CP</th>
-                    <th class="text-center">Membre</th>
-                    <th class="text-center">Catégorie</th>
-                    <th class="text-center">Créée le</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach($annonces as $annonce) : ?>
-                    <tr>
-                        <td class="text-center"><?= $annonce['id_annonce'] ?></td>
-                        <td class="text-center"><?= $annonce['titre'] ?></td>
-                        <td class="text-center"><?= $annonce['desc_courte'] ?></td>
-                        <td class="text-center"><?= $annonce['desc_longue'] ?></td>
-                        <td class="text-center"><?= $annonce['prix'] ?></td>
-                        <td class="text-center"><img src="<?= UPLOAD_URL . $annonce['photo'] ?>" style="object-fit: contain" width="220" height="120" alt="Une photo d'annonce"></td>
-                        <td class="text-center"><?= $annonce['pays'] ?></td>
-                        <td class="text-center"><?= $annonce['ville'] ?></td>
-                        <td class="text-center"><?= $annonce['adresse'] ?></td>
-                        <td class="text-center"><?= $annonce['cp'] ?></td>
-                        <td class="text-center"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['prenom'];  ?>
-                        </td>
-                        <td class="text-center"><?php $queryFindCategorie = $bdd->query("SELECT titre FROM categorie WHERE id_categorie=$annonce[id_categorie]");
-                                                $categorie = $queryFindCategorie->fetch(PDO::FETCH_ASSOC); echo $categorie['titre']; ?>
-                        </td>
-                        <td class="text-center"><?= $annonce['created_at'] ?></td>
-                        <td class="text-center">
-                            <a href="?action=show&id_annonce=<?= $annonce['id_annonce'] ?>"
-                               class="text-success"
-                               title="Voir l'annonce"><i class="bi bi-eye-fill"></i></a>
-                            <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
-                            <a href="admin_form_annonce.php?action=update&id_annonce=<?= $annonce['id_annonce'] ?>"
-                               class="text-primary"
-                               title="Modifier une annonce"><i class="bi bi-pencil-fill"></i></a>
-                            <a href="?action=delete&id_annonce=<?= $annonce['id_annonce'] ?>&id_photo=<?= $annonce['id_photo'] ?>&photo=<?= $annonce['photo'] ?>"
-                               class="ms-2 text-danger"
-                               title="Supprimer une annonce"
-                               onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>
-                        </td>
-                    </tr>
-                <?php endforeach ?>
-                </tbody>
-            </table>
+    <div class="row">
+        <div class="col-12 mx-auto">
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    Toutes les annonces en ligne
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple" class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Titre</th>
+                            <th class="text-center">Description courte</th>
+                            <th class="text-center">Description longue</th>
+                            <th class="text-center">Prix</th>
+                            <th class="text-center">Photo</th>
+                            <th class="text-center">Pays</th>
+                            <th class="text-center">Ville</th>
+                            <th class="text-center">Adresse</th>
+                            <th class="text-center">CP</th>
+                            <th class="text-center">Membre</th>
+                            <th class="text-center">Catégorie</th>
+                            <th class="text-center">Créée le</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?php if(isset($annonces) && !empty($annonces)): ?>
+                                <?php foreach($annonces as $annonce) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= $annonce['id_annonce'] ?></td>
+                                        <td class="text-center"><?= strlen($annonce['titre']) > 30 ? substr($annonce['titre'], 0, 30) : $annonce['titre'] ?></td>
+                                        <td class="text-center"><?= strlen($annonce['desc_courte']) > 20 ? substr($annonce['desc_courte'], 0, 20) : $annonce['desc_courte'] ?></td>
+                                        <td class="text-center"><?= strlen($annonce['desc_longue']) > 30 ? substr($annonce['desc_longue'], 0, 30) : $annonce['desc_longue'] ?></td>
+                                        <td class="text-center"><?= $annonce['prix'] ?> €</td>
+                                        <td class="text-center"><img src="<?= UPLOAD_URL . $annonce['photo'] ?>" style="object-fit: contain" width="220" height="120" alt="Une photo d'annonce"></td>
+                                        <td class="text-center"><?= $annonce['pays'] ?></td>
+                                        <td class="text-center"><?= $annonce['ville'] ?></td>
+                                        <td class="text-center"><?= $annonce['adresse'] ?></td>
+                                        <td class="text-center"><?= $annonce['cp'] ?></td>
+                                        <td class="text-center"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['pseudo'];  ?>
+                                        </td>
+                                        <td class="text-center"><?php $queryFindCategorie = $bdd->query("SELECT titre FROM categorie WHERE id_categorie=$annonce[id_categorie]");
+                                            $categorie = $queryFindCategorie->fetch(PDO::FETCH_ASSOC); echo $categorie['titre']; ?>
+                                        </td>
+                                        <td class="text-center"><?= $annonce['created_at'] ?></td>
+                                        <td class="text-center">
+                                            <a href="?action=show&id_annonce=<?= $annonce['id_annonce'] ?>"
+                                               class="text-success"
+                                               title="Voir l'annonce"><i class="bi bi-eye-fill"></i></a>
+                                            <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
+                                            <a href="?action=update&id_annonce=<?= $annonce['id_annonce'] ?>"
+                                               class="text-primary"
+                                               title="Modifier une annonce"><i class="bi bi-pencil-fill"></i></a>
+                                            <a href="?action=delete&id_annonce=<?= $annonce['id_annonce'] ?>&id_photo=<?= $annonce['id_photo'] ?>&photo=<?= $annonce['photo'] ?>"
+                                               class="ms-2 text-danger"
+                                               title="Supprimer une annonce"
+                                               onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td class="col-md-8 mx-auto" colspan="14">
+                                        <h5 class="text-warning text-center">Aucune annonce</h5>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

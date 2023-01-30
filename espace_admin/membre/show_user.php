@@ -60,6 +60,7 @@ require_once('../include/_header_admin.php');
 
     <div class="row">
         <?= $confirmSupp ?? '' ?>
+        <?= $confirmMessage ?? '' ?>
     </div>
 
     <div class="card mb-4">
@@ -97,7 +98,7 @@ require_once('../include/_header_admin.php');
                             <td class="text-center"><?= $user['created_at'] ?></td>
                             <td class="text-center">
                                 <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
-                                <a href="?action=update&id_user=<?= $user['id_user'] ?>"
+                                <a href="?action=update&amp;id_user=<?= $user['id_user'] ?>"
                                    class="text-primary"
                                    title="Modifier un membre"><i class="bi bi-pencil-fill"></i></a>
 

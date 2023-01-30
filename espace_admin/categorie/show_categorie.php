@@ -77,25 +77,32 @@ if ($query->rowCount()) {
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach($categories as $categorie) : ?>
-                    <tr>
-                        <td class="text-center"><?= $categorie['id_categorie'] ?></td>
-                        <td class="text-center"><?= $categorie['titre'] ?></td>
-                        <td class="text-center"><?= $categorie['mots_clefs'] ?></td>
-                        <td class="text-center">
-                            <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
-                            <a href="?action=update&id_categorie=<?= $categorie['id_categorie'] ?>"
-                               class="text-primary"
-                               title="Modifier une catégorie"><i class="bi bi-pencil-fill"></i></a>
+                        <?php if(isset($categories) && !empty($categories)): ?>
+                            <?php foreach($categories as $categorie) : ?>
+                                <tr>
+                                    <td class="text-center"><?= $categorie['id_categorie'] ?></td>
+                                    <td class="text-center"><?= $categorie['titre'] ?></td>
+                                    <td class="text-center"><?= $categorie['mots_clefs'] ?></td>
+                                    <td class="text-center">
+                                        <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
+                                        <a href="?action=update&id_categorie=<?= $categorie['id_categorie'] ?>"
+                                           class="text-primary"
+                                           title="Modifier une catégorie"><i class="bi bi-pencil-fill"></i></a>
 
-                            <a href="?action=delete&id_categorie=<?= $categorie['id_categorie'] ?>"
-                               class="ms-2 text-danger"
-                               title="Supprimer une catégorie"
-                               onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>
-                        </td>
-                    </tr>
-                    <?php endforeach ?>
-
+                                        <a href="?action=delete&id_categorie=<?= $categorie['id_categorie'] ?>"
+                                           class="ms-2 text-danger"
+                                           title="Supprimer une catégorie"
+                                           onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                        <?php else : ?>
+                            <tr>
+                                <td class="col-md-8 mx-auto" colspan="14">
+                                    <h5 class="text-warning text-center">Aucune catégorie</h5>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

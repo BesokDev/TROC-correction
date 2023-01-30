@@ -79,7 +79,7 @@ require_once('include/_header.php');
 
     <div class="form-group">
         <label for="pseudo"> Pseudo</label>
-        <input type="text" id="pseudo" name="pseudo" class="form-control" value="<?php if(isset($pseudo)) echo $pseudo; ?>">
+        <input type="text" id="pseudo" name="pseudo" class="form-control" value="<?php if(isset($pseudo)) echo $pseudo; ?>" autofocus>
     </div>
     <div class="form-group mt-3">
         <label for="password">Mot de passe</label>
