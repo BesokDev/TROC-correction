@@ -9,21 +9,21 @@ if( ! isAdminConnect()) {
 
 // Si l'admin a cliqué sur "supprimer"
 if (isset($_GET['action']) && $_GET['action'] === 'delete') {
-    $query = $bdd->prepare("DELETE FROM commentaire WHERE id_commentaire=:id_commentaire");
-    $query->bindValue(':id_commentaire', $_GET['amp;id_commentaire']);
+    $query = $bdd->prepare("DELETE FROM note WHERE id_note=:id_note");
+    $query->bindValue(':id_note', $_GET['amp;id_note']);
 
     if ($query->execute()) {
         $confirmSupp = '<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                            <strong>Le commentaire </strong>a bien été supprimé.
+                            <strong>La note </strong>a bien été supprimée.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>';
     }
 }
 
-$query = $bdd->query("SELECT * FROM commentaire");
+$query = $bdd->query("SELECT * FROM note");
 
 if ($query->rowCount()) {
-    $commentaires = $query->fetchAll(PDO::FETCH_ASSOC);
+    $notes = $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
 require_once('../include/_header_admin.php');
@@ -34,16 +34,16 @@ require_once('../include/_header_admin.php');
 
 <div class="container-fluid px-4">
 
-    <h1 class="mt-4">Commentaires</h1>
+    <h1 class="mt-4">Notes</h1>
 
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="../index_admin.php">Dashboard</a></li>
-        <li class="breadcrumb-item active">Commentaires</li>
+        <li class="breadcrumb-item active">Notes</li>
     </ol>
 
     <?php
     if( isset($_GET['action']) && $_GET['action'] === 'update') {
-        dd('update commentaire');
+        dd('update note');
     }
     ?>
 
@@ -54,41 +54,43 @@ require_once('../include/_header_admin.php');
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
-            Tous les commentaires en ligne
+            Toutes les notes attribuées
         </div>
         <div class="card-body">
             <table id="datatablesSimple" class="table">
                 <thead>
                 <tr class=" d-flex justify-content-center">
                     <th class="text-center">#</th>
-                    <th class="text-center">Membre</th>
-                    <th class="text-center">Annonce</th>
-                    <th class="text-center">Commentaire</th>
+                    <th class="text-center">Membre Notant</th>
+                    <th class="text-center">Membre Noté</th>
+                    <th class="text-center">Note</th>
+                    <th class="text-center">Avis</th>
                     <th class="text-center">Enregistré le :</th>
                     <th class="text-center">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($commentaires as $commentaire) : ?>
-                <?php
-                    $membre = findUser($commentaire['id_user'], $bdd);
-                    $annonce = findAnnonce($commentaire['id_annonce'], $bdd);
-                ?>
+                <?php foreach($notes as $note) : ?>
+                    <?php
+                    $membreNotant = findUser($note['id_user_notant'], $bdd);
+                    $membreNote = findUser($note['id_user_auteur'], $bdd);
+                    ?>
 
                     <tr>
-                        <td class="text-center d-flex justify-content-center"><?= $commentaire['id_commentaire'] ?></td>
-                        <td class="text-center d-flex justify-content-center"><?= $membre['id_user'] . ' - ' . $membre['email'] ?></td>
-                        <td class="text-center d-flex justify-content-center"><?= $annonce['id_annonce'] . ' - ' . $annonce['titre'] ?></td>
-                        <td class="text-center d-flex justify-content-center"><?= $commentaire['commentaire'] ?></td>
-                        <td class="text-center d-flex justify-content-center"><?= $commentaire['created_at'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $note['id_note'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $membreNotant['id_user'] . ' - ' . $membreNotant['email'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $membreNote['id_user'] . ' - ' . $membreNote['email'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $note['note'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $note['avis'] ?></td>
+                        <td class="text-center d-flex justify-content-center"><?= $note['created_at'] ?></td>
                         <td class="text-center d-flex justify-content-center">
                             <div class="d-flex justify-content-center">
                                 <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
-                                <a href="?action=update&id_commentaire=<?= $commentaire['id_commentaire'] ?>"
+                                <a href="?action=update&id_note=<?= $note['id_note'] ?>"
                                    class="text-primary"
                                    title="Modifier un commentaire"><i class="bi bi-pencil-fill"></i></a>
 
-                                <a href="?action=delete&id_commentaire=<?= $commentaire['id_commentaire'] ?>"
+                                <a href="?action=delete&id_note=<?= $note['id_note'] ?>"
                                    class="ms-2 text-danger"
                                    title="Supprimer un commentaire"
                                    onclick="return confirm('Cette action entraînera la suppression définitive. Veuillez confirmer la suppression')"><i class="bi bi-x-square"></i></a>

@@ -28,7 +28,7 @@
                         <div class="sb-nav-link-icon"><i class="fa-solid fa-comments"></i></div>
                         Commentaires
                     </a>
-                    <a class="nav-link" href="/espace_admin/membre/show_user.php">
+                    <a class="nav-link" href="/espace_admin/note/show_note.php">
                         <div class="sb-nav-link-icon"><i class="fa-regular fa-star-half-stroke"></i></div>
                         Notes
                     </a>
@@ -36,7 +36,7 @@
             </div>
             <div class="sb-sidenav-footer">
                 <div class="small">Connecté comme :</div>
-                <span class="text-warning"><?= $_SESSION['user']['prenom'] . ' ' . $_SESSION['user']['nom'] ?></span>
+                <span class="text-warning"><?=  isset($_SESSION['user']) ? $_SESSION['user']['prenom'] . ' ' . $_SESSION['user']['nom'] : ''?></span>
             </div>
         </nav>
     </div>
