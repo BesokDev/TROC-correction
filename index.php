@@ -11,7 +11,7 @@ if($_GET) {
     //////////////////////////////////////////////////////////////
     if(! isset($_GET['sort']) && ! isset($_GET['search_query'])) {
 
-        // On filtre $_GET des paires qui ont une valeur vide : c-a-d qu'on ne garde que les champs renseignés
+        // On filtre $_GET des paires qui ont une valeur vide : c.-à-d. qu'on ne garde que les champs renseignés
         $filteredGet = array_filter($_GET);
 
         // Si au moins un champ n'est pas vide
@@ -20,7 +20,7 @@ if($_GET) {
             // Concaténation de la requête SQL
             $queryString .= " WHERE ";
 
-            // Pour chaque paire clé/valeur on construit la requête SQL
+            // Pour chaque paire clé/valeur, on construit la requête SQL
             foreach($filteredGet as $key => $value) {
                 if($key !== 'prix') {
                     $queryString .= "$key=:$key";
@@ -60,7 +60,9 @@ if($_GET) {
 
     ////////////////////////////////////////////////////////////
     if(isset($_GET['sort']) && ! isset($_GET['search_query'])) {
+
         extract($_GET);
+
         switch ($sort) {
             case 'prix_asc': $queryString .= " ORDER BY prix ASC";
                 break;
@@ -113,7 +115,12 @@ if($_GET) {
 
 } // end if($_GET)
 else {
-    $query = $bdd->query($queryString);
+    try {
+        $query = $bdd->query($queryString);
+    } catch (PDOException $exception) {
+        echo $exception->getMessage();
+        die(". <b style='display: block;'>Veuillez ajouter les tables à la BDD 'troc' pour continuer (importer fichier sql/troc.sql dans phpMyAdmin).</b>");
+    }
 
     if ($query->rowCount()) {
         $annonces = $query->fetchAll(PDO::FETCH_ASSOC);

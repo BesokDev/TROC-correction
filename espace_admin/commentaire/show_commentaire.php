@@ -69,7 +69,8 @@ require_once('../include/_header_admin.php');
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($commentaires as $commentaire) : ?>
+                    <?php if(isset($commentaires) && !empty($commentaires)): ?>
+                        <?php foreach($commentaires as $commentaire) : ?>
                 <?php
                     $membre = findUser($commentaire['id_user'], $bdd);
                     $annonce = findAnnonce($commentaire['id_annonce'], $bdd);
@@ -97,7 +98,13 @@ require_once('../include/_header_admin.php');
                         </td>
                     </tr>
                 <?php endforeach ?>
-
+                    <?php else : ?>
+                        <tr>
+                            <td class="col-md-8 mx-auto" colspan="14">
+                                <h5 class="text-warning text-center">Aucun commentaire</h5>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

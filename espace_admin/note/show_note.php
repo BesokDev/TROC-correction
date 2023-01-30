@@ -70,7 +70,8 @@ require_once('../include/_header_admin.php');
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($notes as $note) : ?>
+                    <?php if(isset($notes) && !empty($notes)): ?>
+                        <?php foreach($notes as $note) : ?>
                     <?php
                     $membreNotant = findUser($note['id_user_notant'], $bdd);
                     $membreNote = findUser($note['id_user_auteur'], $bdd);
@@ -99,7 +100,13 @@ require_once('../include/_header_admin.php');
                         </td>
                     </tr>
                 <?php endforeach ?>
-
+                    <?php else : ?>
+                        <tr>
+                            <td class="col-md-8 mx-auto" colspan="14">
+                                <h5 class="text-warning text-center">Aucune note</h5>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
