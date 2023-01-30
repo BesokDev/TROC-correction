@@ -291,7 +291,7 @@ require_once('include/_header.php');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form action="?id_annonce=<?= $_GET['id_annonce'] ?>&form=note" method="post">
+                    <form method="get">
                         <div class="modal-body">
 
                             <div class="row input-group mx-auto">
@@ -307,6 +307,8 @@ require_once('include/_header.php');
                                     <textarea name="corps" rows="4" placeholder="Écrivez votre email ici" class="form-control"></textarea>
                                 </div>
                             </div>
+
+                            <input type="hidden" name="id_annonce" value="<?= $annonce['id_annonce'] ?>">
 
                         </div>
                         <div class="modal-footer">
