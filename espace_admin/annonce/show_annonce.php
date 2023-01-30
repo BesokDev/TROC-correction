@@ -130,7 +130,7 @@ require_once('../include/_header_admin.php');
                                                class="text-success"
                                                title="Voir l'annonce"><i class="bi bi-eye-fill"></i></a>
                                             <!-- TODO: Corriger le problème "amp;" dans l'URL  -->
-                                            <a href="?action=update&id_annonce=<?= $annonce['id_annonce'] ?>"
+                                            <a href="admin_form_annonce?action=update&id_annonce=<?= $annonce['id_annonce'] ?>"
                                                class="text-primary"
                                                title="Modifier une annonce"><i class="bi bi-pencil-fill"></i></a>
                                             <a href="?action=delete&id_annonce=<?= $annonce['id_annonce'] ?>&id_photo=<?= $annonce['id_photo'] ?>&photo=<?= $annonce['photo'] ?>"
