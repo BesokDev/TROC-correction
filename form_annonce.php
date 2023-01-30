@@ -34,10 +34,13 @@ if($_POST) {
                 $newFilePath = UPLOAD_FOLDER . $newFilename;
 
                 if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    // Enregistrement dans la table 'photo'
                     $queryPhoto = $bdd->query("INSERT INTO photo VALUES (NULL, '".$newFilename."', NULL, NULL, NULL, NULL)");
 
+                    // Permet de récupérer la dernière insertion faite en BDD
                     $idPhoto = $bdd->lastInsertId();
 
+                    // Préparation del a requête dans la table 'annonce'
                     $queryAnnonce = $bdd->prepare("INSERT INTO annonce VALUES (NULL, :titre, :desc_courte, :desc_longue, :prix, :photo, :pays, :ville, :adresse, :cp, :id_user, :id_photo, :id_categorie, :created_at, NULL, NULL)");
 
                     $queryAnnonce->bindValue(':titre', $titre);
