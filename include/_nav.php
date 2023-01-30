@@ -19,8 +19,8 @@
                         </li>
                     </ul>
 
-                    <form class="col-6">
-                        <input class="form-control me-2" type="search" placeholder="Rechercher une annonce" aria-label="Search" title='Tapez "Entrée" pour rechercher'>
+                    <form class="col-6" action="index.php?" method="get">
+                        <input name="search_query" class="form-control me-2" type="search" placeholder="Rechercher une annonce" aria-label="Search" title='Tapez "Entrée" pour rechercher'>
                     </form>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

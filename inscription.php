@@ -37,6 +37,7 @@ if($_POST && !empty($_POST))
         $error = true;
     }
 
+    // ---------------------- EMAIL CHECK -------------------------
 //    $verifEmail = $bdd->prepare("SELECT * FROM user WHERE email = :email");
 //    $verifEmail->bindValue(':email', $email, PDO::PARAM_STR);
 //    $verifEmail->execute();
@@ -46,12 +47,12 @@ if($_POST && !empty($_POST))
 //        $errorEmail= "<p class='text-danger font-italic'>Un compte existe déjà avec cet email : $email. Veuillez en saisir un autre.</p>";
 //        $error = true;
 //    }
-
-    if (empty($email))
-    {
-        $errorEmail= "<p class='text-danger font-italic'>Il faut renseigner un email</p>";
-        $error=true;
-    }
+//
+//    if (empty($email))
+//    {
+//        $errorEmail= "<p class='text-danger font-italic'>Il faut renseigner un email</p>";
+//        $error=true;
+//    }
 
 // 4. Informer l'internaute si les mots de passe ne correspondent pas.
     if($password !== $confirm_mdp)
@@ -79,11 +80,11 @@ if($_POST && !empty($_POST))
         $insert->bindValue(':password', $password);
         $insert->bindValue(':nom', $nom);
         $insert->bindValue(':prenom', $prenom);
-        $insert->bindValue(':email', $email);
+        $insert->bindValue(':email', strtolower($email));
         $insert->bindValue(':telephone', $telephone);
         $insert->bindValue(':civilite', $civilite);
         $insert->bindValue(':statut', 0, PDO::PARAM_INT);
-        $insert->bindValue(':created_at', date('Y-m-d H:i:s'));
+        $insert->bindValue(':created_at', date('Y-m-d'));
 
         $insert->execute();
 

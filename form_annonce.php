@@ -43,7 +43,7 @@ if($_POST) {
                     $queryAnnonce->bindValue(':titre', $titre);
                     $queryAnnonce->bindValue(':desc_courte', $desc_courte);
                     $queryAnnonce->bindValue(':desc_longue', $desc_longue);
-                    $queryAnnonce->bindValue(':prix', $prix);
+                    $queryAnnonce->bindValue(':prix', (int)$prix);
                     $queryAnnonce->bindValue(':photo', $newFilename);
                     $queryAnnonce->bindValue(':pays', $pays);
                     $queryAnnonce->bindValue(':ville', $ville);
@@ -73,7 +73,7 @@ if(isset($_GET['action']) && $_GET['action'] === 'update') {
 }
 
 
-$query = $bdd->query("SELECT * FROM categorie;");
+$query = $bdd->query("SELECT * FROM categorie ORDER BY titre ASC;");
 
 if($query->rowCount()) {
     $categories = $query->fetchAll(PDO::FETCH_ASSOC);

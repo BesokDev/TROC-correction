@@ -35,7 +35,7 @@ if($_POST) {
             $query->bindValue(':id_user', $_SESSION['user']['id_user']);
             $query->bindValue(':id_annonce', $_GET['id_annonce']);
             $query->bindValue(':commentaire', $commentaire);
-            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+            $query->bindValue(':created_at', date('Y-m-d'));
 
             if ($query->execute()) {
                 $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">
@@ -55,7 +55,7 @@ if($_POST) {
 //            $query->bindValue(':note', (int)$note);
             $query->bindValue(':note', $note);
             $query->bindValue(':avis', $avis);
-            $query->bindValue(':created_at', date('Y-m-d H:i:s'));
+            $query->bindValue(':created_at', date('Y-m-d'));
 
             if ($query->execute()) {
                 $confirmMessage = '<div class="alert alert-success alert-dismissible fade show text-center mt-3" role="alert">

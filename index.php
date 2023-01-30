@@ -4,90 +4,141 @@ require_once('include/_init.php');
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$queryString = "SELECT * FROM annonce";
 
 if($_GET) {
-    extract($_GET);
 
-    $queryString = "SELECT * FROM annonce";
+    //////////////////////////////////////////////////////////////
+    if(! isset($_GET['sort']) && ! isset($_GET['search_query'])) {
 
-    $filteredGet = array_filter($_GET);
+        // On filtre $_GET des paires qui ont une valeur vide : c-a-d qu'on ne garde que les champs renseignés
+        $filteredGet = array_filter($_GET);
 
-//    dd($filteredGet);
-    if(count($filteredGet)) {
-//        $queryString = $bdd->prepare("SELECT * FROM annonce WHERE id_categorie=:categorie OR ville=:ville OR prix BETWEEN 0 AND :prix OR id_user=:membre");
+        // Si au moins un champ n'est pas vide
+        if(count($filteredGet)) {
 
+            // Concaténation de la requête SQL
             $queryString .= " WHERE ";
-//            $keynames = array_keys($filteredGet); // make array of key names from $filteredGet
-            foreach($filteredGet as $key => $value)
-            {
-//    dd($filteredGet);
 
-                $queryString .= "$key='$value'";  // $filteredGet keyname = $filteredGet['keyname'] value
+            // Pour chaque paire clé/valeur on construit la requête SQL
+            foreach($filteredGet as $key => $value) {
+                if($key !== 'prix') {
+                    $queryString .= "$key=:$key";
+                } else {
+                    $queryString .= "$key BETWEEN 0 AND :$key";
+                }
 
-                if (count($filteredGet) >=2 && $key != array_key_last($filteredGet)) { // more than one search filter, and not the last
+                // S'il y a plusieurs champs et que ce n'est pas le dernier du tableau $filteredGet
+                if (count($filteredGet) >=2 && $key != array_key_last($filteredGet)) {
                     $queryString .= " AND ";
                 }
             }
 
+        }
+
+        // On fait une requête préparée pour sécuriser la requête SQL
+        $filterQuery = $bdd->prepare($queryString);
+
+        // Pour chaque champ renseigné, on lie la valeur
+        foreach($filteredGet as $key => $value) {
+            $filterQuery->bindValue(":$key", htmlspecialchars($value) ?? '');
+        }
+
+        // Exécution de la requête
+        $filterQuery->execute();
+
+        // S'il y a au moins 1 résultat dans la requête SQL
+        if($filterQuery->rowCount()) {
+            // On récupère toutes les annonces
+            $annonces = $filterQuery->fetchAll(PDO::FETCH_ASSOC);
+
+            // On variabilise le total d'annonces
+            $totalAnnonce = $filterQuery->rowCount();
+
+        } // end if(rowCount())
     }
 
-    if(isset($_GET['sort'])) {
+    ////////////////////////////////////////////////////////////
+    if(isset($_GET['sort']) && ! isset($_GET['search_query'])) {
+        extract($_GET);
         switch ($sort) {
-            case 'prix_asc': $queryString .= " ORDER BY prix";
+            case 'prix_asc': $queryString .= " ORDER BY prix ASC";
                 break;
             case 'prix_desc': $queryString .= " ORDER BY prix DESC";
                 break;
-            case 'date_asc': $queryString .= " ORDER by created_at";
+            case 'date_asc': $queryString .= " ORDER by created_at ASC";
                 break;
             case 'date_desc': $queryString .= " ORDER by created_at DESC";
+                break;
+            case 'vendeur': $queryString = "SELECT * FROM annonce WHERE id_user IN (SELECT id_user FROM user WHERE id_user IN (SELECT id_user_auteur FROM note GROUP BY id_user_auteur HAVING ROUND(AVG(note), 1) >= 4) );";
+//            dd($bdd->query($queryString)->fetchAll(PDO::FETCH_ASSOC));
                 break;
             default: $queryString .= '';
                 break;
         }
-    }
+        $query = $bdd->query($queryString);
 
-    $filterQuery = $bdd->prepare($queryString);
+        if ($query->rowCount()) {
+            $annonces = $query->fetchAll(PDO::FETCH_ASSOC);
+            $totalAnnonce = $query->rowCount();
+        } // end if(rowCount())
+    } // end if(isset($sort))
 
-    $filterQuery->bindValue(':categorie', $id_categorie ?? '');
-    $filterQuery->bindValue(':ville', $ville ?? '');
-    $filterQuery->bindValue(':membre', $id_user ?? '');
-    $filterQuery->bindValue(':prix', $prix ?? '');
+    //////////////////////////////////////////////////////////////
+    if(isset($_GET['search_query']) && !isset($_GET['sort'])) {
+        extract($_GET);
 
-    $filterQuery->execute();
-    if($filterQuery->rowCount()) {
+        $queryString .= " WHERE titre LIKE :titre OR desc_courte LIKE :desc_c OR desc_longue LIKE :desc_l";
 
-        $annonces = $filterQuery->fetchAll(PDO::FETCH_ASSOC);
-        $totalAnnonce = $filterQuery->rowCount();
-    } // end if(rowCount())
+        // On fait une requête préparée pour sécuriser la requête SQL
+        $searchQuery = $bdd->prepare($queryString);
 
-} else {
-    //$query = $bdd->query("SELECT * FROM annonce WHERE deleted_at IS NULL"); # à utiliser pour le soft delete
-    $query = $bdd->query("SELECT * FROM annonce");
+        // On lie les valeurs
+        $searchQuery->bindValue(":titre", "%".htmlspecialchars($search_query)."%");
+        $searchQuery->bindValue(":desc_c", "%".htmlspecialchars($search_query)."%");
+        $searchQuery->bindValue(":desc_l", "%".htmlspecialchars($search_query)."%");
+
+        // Exécution de la requête
+        $searchQuery->execute();
+
+        // S'il y a au moins 1 résultat dans la requête SQL
+        if($searchQuery->rowCount()) {
+            // On récupère toutes les annonces
+            $annonces = $searchQuery->fetchAll(PDO::FETCH_ASSOC);
+
+            // On variabilise le total d'annonces
+            $totalAnnonce = $searchQuery->rowCount();
+        }
+    } // end if(isset($search_query))
+
+} // end if($_GET)
+else {
+    $query = $bdd->query($queryString);
 
     if ($query->rowCount()) {
         $annonces = $query->fetchAll(PDO::FETCH_ASSOC);
         $totalAnnonce = $query->rowCount();
     } // end if(rowCount())
-
-} // end if/else($_GET)
+} // end else
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$catQuery = $bdd->query("SELECT * FROM categorie");
+$catQuery = $bdd->query("SELECT * FROM categorie ORDER BY titre ASC");
 
 if ($catQuery->rowCount()) {
     $categories = $catQuery->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$villeQuery = $bdd->query("SELECT ville FROM annonce GROUP BY ville");
+$villeQuery = $bdd->query("SELECT ville FROM annonce GROUP BY ville ORDER BY ville ASC");
 
 if ($villeQuery->rowCount()) {
     $villes = $villeQuery->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$membreQuery = $bdd->query("SELECT u.id_user, u.pseudo FROM user u, annonce a WHERE a.id_user = u.id_user GROUP BY pseudo");
+// Requête de jointure pour retrouver les vendeurs uniquement
+$membreQuery = $bdd->query("SELECT u.id_user, u.pseudo FROM user u, annonce a WHERE a.id_user = u.id_user GROUP BY pseudo ORDER BY pseudo ASC");
 
 if ($membreQuery->rowCount()) {
     $membres = $membreQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -161,7 +212,7 @@ require_once('include/_header.php');
                             <option value="prix_desc">Trier par prix décroissant</option>
                             <option value="date_asc">Trier par date croissante</option>
                             <option value="date_desc">Trier par date décroissante</option>
-                            <option value="membre">Trier par vendeur</option>
+                            <option value="vendeur">Trier par vendeur</option>
                         </select>
                         <button type="submit" class="btn btn-sm btn-info">Valider</button>
                     </div>
@@ -184,7 +235,7 @@ require_once('include/_header.php');
                                         <h5 class="card-title text-primary"><?= $annonce['titre'] ?></h5>
                                         <p class="card-text text-dark"><?= $annonce['desc_courte'] ?></p>
                                         <div class="row text-dark pt-5">
-                                            <div class="col-6"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['prenom'];  ?> ⭐⭐⭐⭐⭐</div>
+                                            <div class="col-6"><?php $membre = findUser($annonce['id_user'], $bdd); echo $membre['pseudo'];  ?> ⭐⭐⭐⭐⭐</div>
                                             <div class="col-6 text-end"><?= $annonce['prix'] ?> €</div>
                                         </div>
                                     </div>
@@ -212,14 +263,14 @@ require_once('include/_header.php');
                 </div>
                 <hr class="col-12">
             </div>
+            <div class="text-center my-4">
+                <?php if (isConnect()): ?>
+                    <a href="form_annonce.php" class="text-decoration-none">Publiez votre annonce</a>
+                <?php else : ?>
+                    <a href="connexion.php" class="text-decoration-none">Connectez-vous</a>
+                <?php endif; ?>
+            </div>
         <?php endif ?>
-        <div class="text-center my-4">
-            <?php if (isConnect()) : ?>
-                <a href="form_annonce.php" class="text-decoration-none">Publiez votre annonce</a>
-            <?php else : ?>
-                <a href="connexion.php" class="text-decoration-none">Connectez-vous</a>
-            <?php endif; ?>
-        </div>
     </div>
 </div>
 
