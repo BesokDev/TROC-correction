@@ -54,7 +54,7 @@ if($_POST){
 
         // 5. Gérer les failles XSS
         foreach ($_POST as $key => $value) {
-            $_POST[$key] = htmlspecialchars($value);
+            $_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
         }
 
         if(isset($_GET['action']) && $_GET['action'] === 'submit_create') {

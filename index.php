@@ -41,7 +41,7 @@ if($_GET) {
 
         // Pour chaque champ renseigné, on lie la valeur
         foreach($filteredGet as $key => $value) {
-            $filterQuery->bindValue(":$key", htmlspecialchars($value) ?? '');
+            $filterQuery->bindValue(":$key", htmlspecialchars($value, ENT_QUOTES) ?? '');
         }
 
         // Exécution de la requête
@@ -95,9 +95,9 @@ if($_GET) {
         $searchQuery = $bdd->prepare($queryString);
 
         // On lie les valeurs
-        $searchQuery->bindValue(":titre", "%".htmlspecialchars($search_query)."%");
-        $searchQuery->bindValue(":desc_c", "%".htmlspecialchars($search_query)."%");
-        $searchQuery->bindValue(":desc_l", "%".htmlspecialchars($search_query)."%");
+        $searchQuery->bindValue(":titre", "%".htmlspecialchars($search_query, ENT_QUOTES)."%");
+        $searchQuery->bindValue(":desc_c", "%".htmlspecialchars($search_query, ENT_QUOTES)."%");
+        $searchQuery->bindValue(":desc_l", "%".htmlspecialchars($search_query, ENT_QUOTES)."%");
 
         // Exécution de la requête
         $searchQuery->execute();

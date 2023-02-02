@@ -61,7 +61,7 @@ if($_POST && !empty($_POST))
         // 5. Gérer les failles XSS
         foreach($_POST as $key => $value)
         {
-            $_POST[$key] = htmlspecialchars($value);
+            $_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
         }
 
         // CRYPTAGE DU MDP EN BDD
